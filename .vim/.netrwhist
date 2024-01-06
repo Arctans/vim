@@ -1,0 +1,6 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='/home/ut-e05857/workspace/imx6dl/DTB/imx6dl_imh2aevb_dtb'
+let g:netrw_dirhist_3='/home/ut-e05857/workspace/imx6dl/uboot-2019-04/drivers/gpio'
+let g:netrw_dirhist_2='/home/ut-e05857/workspace/imx6dl/DTB/imx6dl_ut059e_dtb'
+let g:netrw_dirhist_1='/home/ut-e05857/workspace/Trash/c/disk_demo'
