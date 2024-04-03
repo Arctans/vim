@@ -49,11 +49,14 @@ endif
 
 
 set nocompatible              " be iMproved, required
-filetype  on                  " required
+filetype on                  " required
 
 
 "vim 中文乱码可以设置
 "e ++enc=cp936 
+set termencoding=utf-8
+set encoding=utf-8
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 
 "代码根据 {} 自动折叠
 "set foldmethod=indent
@@ -70,8 +73,6 @@ set shiftwidth=4
 "设置自动缩进
 set autoindent
 set cindent
-"关闭vim 终端提示音
-set vb t_vb=
 
 "设置vim-colorschemes
 set background=dark
@@ -98,7 +99,7 @@ map <F2> :NERDTreeToggle<CR>
 "ctags 配置:F3快捷键显示程序中的各种tags，包括变量和函数等。
 map <F3> :TlistToggle<CR>
 
-" map <F4> :botright copen<CR>
+" map <F4> :browse oldfiles<CR>
 
 "map <F5> <C-w>]
 map <F6> <C-w>c
@@ -127,6 +128,10 @@ nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
 " find where file the func is
 nmap <C-\>i :cs find i <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
 
 
 " 取消JK 缩进一行
@@ -137,13 +142,12 @@ map <C-j> :bprevious<CR>
 map <C-k> :bnext<CR>
 map <C-e> :botright copen<CR>
 map c<C-e> :cclose<CR>
-
-" 映射后需修改 secureCRT 会话选项里的 backspace 发送delete B
+" 映射后需勾选 secureCRT 会话选项里的 backspace 发送delete B
 " Ctrl+h 插入模式向左移动光标
 inoremap <C-h> <left>
 " Ctrl+j 插入模式向下移动光标
 inoremap <C-j> <down>
-" Ctrl+k 插入模式向上移动光标
+" Ctrl+h 插入模式向上移动光标
 inoremap <C-k> <up>
 " Ctrl+l 插入模式向右移动光标
 inoremap <C-l> <right>
@@ -166,7 +170,6 @@ Plugin 'morhetz/gruvbox'
 " 模糊搜索
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
-Plugin 'terryma/vim-expand-region'
 
 " coc.nvim
 " Plug 'neoclide/coc.nvim', {'branch' : 'release'}
@@ -239,12 +242,39 @@ filetype plugin indent on    " required
 
 "配色方案设置
 colorscheme gruvbox
-"colorscheme badwolf
+"colorscheme Atelier_CaveDark
+" colorscheme badwolf
 
 " 打开文件自动跳转到上一次的光标位置
 if has("autocmd")
   au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
 endif
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""NerdTree 目录自动跳转
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Check if NERDTree is open or active
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+" Highlight currently open buffer in NERDTree
+autocmd BufEnter * call SyncTree()
+ 
+function! ToggleNerdTree()
+  set eventignore=BufEnter
+  NERDTreeToggle
+  set eventignore=
+endfunction
+nmap <C-n> :call ToggleNerdTree()<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -256,11 +286,12 @@ autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()"
 func SetTitle() 
 	"如果文件类型为.sh文件 
 	if &filetype == 'sh' 
-		call setline(1, "##########################################################################") 
-		call append(line("."), "# File Name: ".expand("%")) 
-		call append(line(".")+1, "# Author: Arctan") 
-		call append(line(".")+2, "# Created Time: ".strftime("%c")) 
-		call append(line(".")+3, "#########################################################################") 
+		call setline(1, "#!/bin/bash") 
+		call append(line("."), "##########################################################################") 
+		call append(line(".")+1, "# File Name: ".expand("%")) 
+		call append(line(".")+2, "# Author: Arctan") 
+		call append(line(".")+3, "# Created Time: ".strftime("%c")) 
+		call append(line(".")+4, "#########################################################################") 
 	"	call append(line(".")+5, "#!/bin/zsh")
 	"	call append(line(".")+6, "PATH=/home/edison/bin:/home/edison/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/work/tools/gcc-3.4.5-glibc-2.3.6/bin")
 	"	call append(line(".")+7, "export PATH")
@@ -290,8 +321,11 @@ func SetTitle()
 	autocmd BufNewFile * normal G
 endfunc 
 
-"关闭Buffers 的预览窗口
+
+"fzf 预览窗口
 let g:fzf_preview_window = []
+
+
 "sneak#label
 let g:sneak#label = 1
 
@@ -336,7 +370,7 @@ endif
 
 
 "set fenc=utf-8
-set fileencodings=utf-8
+" set fileencodings=utf-8
 
 set cscopequickfix=e-,i-,s-,t-
 "nnoremap k gk
@@ -356,7 +390,7 @@ let Tlist_Show_One_File=1
 let Tlist_Exit_OnlyWindow=1
 let Tlist_WinWidt=20
 
-let NERDTreeWinSize=20
+let NERDTreeWinSize=40
 
 "end 快捷键
 
@@ -376,5 +410,3 @@ set tags+=~/.vim/systags;
 " 2、查看二进制文件
 " hexdump -C uImage |less 
 "
-" 3、查看二进制文件
-" find ./ -name *.c -o -name *h *.s -o -name *.java >cscope.file
