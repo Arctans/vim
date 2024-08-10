@@ -241,7 +241,8 @@ filetype plugin indent on    " required
 
 
 "配色方案设置
-colorscheme gruvbox
+"colorscheme gruvbox
+colorscheme codedark
 "colorscheme Atelier_CaveDark
 " colorscheme badwolf
 
@@ -266,8 +267,10 @@ function! SyncTree()
     wincmd p
   endif
 endfunction
+
 " Highlight currently open buffer in NERDTree
-autocmd BufEnter * call SyncTree()
+" #关闭自动跳转
+" autocmd BufEnter * call SyncTree()
  
 function! ToggleNerdTree()
   set eventignore=BufEnter
@@ -275,6 +278,7 @@ function! ToggleNerdTree()
   set eventignore=
 endfunction
 nmap <C-n> :call ToggleNerdTree()<CR>
+nmap <S-n> :NERDTreeFind<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
