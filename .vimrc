@@ -233,7 +233,8 @@ Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'SirVer/ultisnips'
 "Plugin 'honza/vim-snippets'
 " 对称括号加颜色
-" Plug 'frazrepo/vim-rainbow'
+Plugin 'frazrepo/vim-rainbow'
+Plugin 'vim-airline/vim-airline'
 
 
 call vundle#end()            " required
@@ -277,8 +278,9 @@ function! ToggleNerdTree()
   NERDTreeToggle
   set eventignore=
 endfunction
-nmap <C-n> :call ToggleNerdTree()<CR>
-nmap <S-n> :NERDTreeFind<CR>
+"nmap <C-n> :call ToggleNerdTree()<CR>
+nmap <C-n> :NERDTreeFind<CR>
+nmap <C-g> :grep! -nr
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
