@@ -278,7 +278,7 @@ function! ToggleNerdTree()
   NERDTreeToggle
   set eventignore=
 endfunction
-"nmap <C-n> :call ToggleNerdTree()<CR>
+nmap c<C-n> :call ToggleNerdTree()<CR>
 nmap <C-n> :NERDTreeFind<CR>
 nmap <C-g> :grep! -nr
 
