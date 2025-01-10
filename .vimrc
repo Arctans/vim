@@ -235,6 +235,7 @@ Plugin 'SirVer/ultisnips'
 " 对称括号加颜色
 Plugin 'frazrepo/vim-rainbow'
 Plugin 'vim-airline/vim-airline'
+Plugin 'ludovicchabant/vim-gutentags'
 
 
 call vundle#end()            " required
@@ -351,7 +352,19 @@ let g:ycm_enable_diagnostic_signs = 0
 
 let g:ycm_use_clangd = 0
 
-
+"ctags
+" 启用 Gutentags
+let g:gutentags_enabled = 1
+" 保存文件时自动生产tags 文件
+let g:gutentags_generate_on_write=1
+" 设置标签文件的存储路径
+let g:gutentags_cache_dir = '~/.cache/tags'
+" 指定如何列出项目中的文件
+let g:gutentags_file_list_command='git ls-files'
+" 指定项目根目录
+let g:gutentags_project_root=['.git', '.svn', '.hg']
+" 在状态栏显示 Gutentags 状态
+set statusline+=%{gutentags#statusline()}
 
 
 if has("cscope")
