@@ -291,7 +291,7 @@ let g:ycm_use_clangd = 0
 " 检查是否支持 cscope
 if has("cscope")
     " 使用 quickfix 窗口显示结果
-    set cscopequickfix=s-,c-,d-,i-,t-,e-
+    " set cscopequickfix=s-,c-,d-,i-,t-,e-
 	let g:cscope_silent = 1
 	let g:cscope_use_quickfix = 1
 
