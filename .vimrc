@@ -81,81 +81,6 @@ if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif
 
-"快捷键
-
-"NERDTree 配置:F2快捷键显示当前目录树
-
-"sneak map
-"map f <Plug>Sneak_f
-"map F <Plug>Sneak_F
-"map t <Plug>Sneak_t
-"map T <Plug>Sneak_T
-
-" 按f1可以查看括号的匹配
-map <F1> <S-%>
-
-map <F2> :NERDTreeToggle<CR>
-
-"ctags 配置:F3快捷键显示程序中的各种tags，包括变量和函数等。
-map <F3> :TlistToggle<CR>
-
-" map <F4> :browse oldfiles<CR>
-
-"map <F5> <C-w>]
-map <F6> <C-w>c
-
-"" 只是查看函数被调用的地方，而不是字符串搜素
-"map <F7> :call CS_Search_Word()<CR>
-" 关闭弹出窗口
-"map <F8> :cclose<CR>
-map <C-]> :call Tags_Serach()<CR>
-" 查看函数被调用的地方
-map <F7> :call CS_Search_calledfunc()<CR>
-" 查看函数定义
-map <F8> :call CS_Search_whatfunc()<CR>
-
-
-" 在项目级别查找单词所在的地方，并弹出窗口
-map <F9> :call Search_Word()<CR>
-
-"cs search word
-nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-" find the define
-nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-" find call what funcs 
-nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-" find called func
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-" find where file the func is
-nmap <C-\>i :cs find i <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-
-
-" 取消JK 缩进一行
-nmap J j
-
-map <C-d> :Buffers<CR>
-map <C-j> :bprevious<CR>
-map <C-k> :bnext<CR>
-map <C-e> :botright copen<CR>
-map c<C-e> :cclose<CR>
-" 映射后需勾选 secureCRT 会话选项里的 backspace 发送delete B
-" Ctrl+h 插入模式向左移动光标
-inoremap <C-h> <left>
-" Ctrl+j 插入模式向下移动光标
-inoremap <C-j> <down>
-" Ctrl+h 插入模式向上移动光标
-inoremap <C-k> <up>
-" Ctrl+l 插入模式向右移动光标
-inoremap <C-l> <right>
-
-
-
-
-
 set nocp
 filetype plugin on
 
@@ -254,6 +179,7 @@ if has("autocmd")
 endif
 
 
+" ================Tlist configuration =====================
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""NerdTree 目录自动跳转
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -282,6 +208,7 @@ endfunction
 nmap c<C-n> :call ToggleNerdTree()<CR>
 nmap <C-n> :NERDTreeFind<CR>
 nmap <C-g> :grep! -nr
+let NERDTreeWinSize=40
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -328,19 +255,29 @@ func SetTitle()
 	autocmd BufNewFile * normal G
 endfunc 
 
+" ================Tlist configuration =====================
+let Tlist_Use_Right_Window=1
+let Tlist_Show_One_File=1
+let Tlist_Exit_OnlyWindow=1
+let Tlist_WinWidt=20
 
-"fzf 预览窗口
+"let Tlist_Auto_Open=1
+let Tlist_Exit_OnlyWindow=0
+let Tlist_Use_Right_Window=1
+let Tlist_WinWidth=40
+"let Tlist_Inc_Winwidth=1
+
+
+" ================FZF configuration =====================
 let g:fzf_preview_window = []
 
 
-"sneak#label
+" ================sneak configuration =====================
 let g:sneak#label = 1
 
+" ================ycm configuration =====================
 let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
-
 let g:ycm_confirm_extra_conf = 0
-" arctan add 
-
 " 错误标识符
 let g:ycm_error_symbol='>E'
 " " 警告标识符
@@ -348,10 +285,86 @@ let g:ycm_warning_symbol='>*'
 " 取消错误提示
 let g:ycm_enable_diagnostic_highlighting = 0
 let g:ycm_enable_diagnostic_signs = 0
-
-
 let g:ycm_use_clangd = 0
 
+" ================cscope configuration =====================
+" 检查是否支持 cscope
+if has("cscope")
+    " 使用 quickfix 窗口显示结果
+    set cscopequickfix=s-,c-,d-,i-,t-,e-
+	let g:cscope_silent = 1
+	let g:cscope_use_quickfix = 1
+
+    " 优先使用 cscope 而不是 ctags
+    set csto=0
+    
+    " 设置 cscope 命令路径（如果需要）
+    " set csprg=/usr/local/bin/cscope
+endif
+
+function! GenerateCscopeDB()
+    " 保存当前目录
+    let l:current_dir = getcwd()
+    " 查找项目根目录（包含 .git/.svn 等的目录）
+    let l:project_root = finddir('.git', '.;')
+    if l:project_root != ''
+        let l:project_root = fnamemodify(l:project_root, ':h')
+    else
+        let l:project_root = finddir('.svn', '.;')
+        if l:project_root != ''
+            let l:project_root = fnamemodify(l:project_root, ':h')
+        else
+            let l:project_root = getcwd()
+        endif
+    endif
+    " 切换到项目根目录
+    execute 'cd' fnameescape(l:project_root)
+    " 生成 cscope.files
+    silent! execute '!find . -type f \( -name "*.c" -o -name "*.h" -o -name "*.cpp" -o -name "*.hpp" -o -name "*.cc" -o -name "*.cxx" -o -name "*.java" -o -name "*.py" \) -print > cscope.files'
+    " 生成 cscope 数据库
+    silent! execute '!cscope -b -q -k'
+    " 可选：生成 tags
+    " silent! execute '!ctags -R'
+    " 返回原目录
+    execute 'cd' fnameescape(l:current_dir)
+    " 重新加载 cscope 连接
+    call LoadCscopeDB()
+    echo "Cscope database generated in " . l:project_root
+endfunction
+
+function! LoadCscopeDB()
+    " 先断开所有现有连接
+    silent! cs kill -1
+    
+    " 查找 cscope.out 文件（从当前目录向上搜索到根目录）
+    let db = findfile("cscope.out", ".;")
+    if !empty(db)
+        let path = fnamemodify(db, ':p:h')
+        
+        " 抑制重复连接错误信息
+        set nocscopeverbose
+        
+        " 添加数据库
+        execute "cs add " . db . " " . path
+        
+        " 恢复 verbose 设置
+        set cscopeverbose
+        
+        " echo "Loaded cscope database: " . db
+    else
+        " echo "No cscope database found"
+		" call GenerateCscopeDB()
+    endif
+endfunction
+
+" 打开文件时自动加载 cscope 数据库
+autocmd BufEnter * call LoadCscopeDB()
+
+" 快捷键映射
+nmap <leader>cg :call GenerateCscopeDB()<CR>
+nmap <leader>cl :call LoadCscopeDB()<CR>
+
+" ================ctags configuration =====================
 "ctags
 " 启用 Gutentags
 let g:gutentags_enabled = 1
@@ -366,32 +379,83 @@ let g:gutentags_project_root=['.git', '.svn', '.hg']
 " 在状态栏显示 Gutentags 状态
 set statusline+=%{gutentags#statusline()}
 
-
-if has("cscope")
-	set csprg=/usr/bin/cscope
-	set csto=0
-	set cst
-	set nocsverb
-	" add any database in current directory
-	if filereadable("./cscope.out")
-		cs add ./cscope.out
-	"else add database pointed to by environment
-	elseif $CSCOPE_DB != ""
-	"if $CSCOPE_DB != ""
-		cs add $CSCOPE_DB
-	endif
-	set csverb
-endif
-
 if filereadable("./tags")
 	set tags+=./tags;
 endif
+set tags+=~/.vim/systags;
+
+"快捷键
+"NERDTree 配置:F2快捷键显示当前目录树
+
+"sneak map
+"map f <Plug>Sneak_f
+"map F <Plug>Sneak_F
+"map t <Plug>Sneak_t
+"map T <Plug>Sneak_T
+
+" 按f1可以查看括号的匹配
+map <F1> <S-%>
+
+map <F2> :NERDTreeToggle<CR>
+
+"ctags 配置:F3快捷键显示程序中的各种tags，包括变量和函数等。
+map <F3> :TlistToggle<CR>
+
+" map <F4> :browse oldfiles<CR>
+
+"map <F5> <C-w>]
+map <F6> <C-w>c
+
+"" 只是查看函数被调用的地方，而不是字符串搜素
+"map <F7> :call CS_Search_Word()<CR>
+" 关闭弹出窗口
+"map <F8> :cclose<CR>
+map <C-]> :call Tags_Serach()<CR>
+" 查看函数被调用的地方
+map <F7> :call CS_Search_calledfunc()<CR>
+" 查看函数定义
+map <F8> :call CS_Search_whatfunc()<CR>
+
+" 在项目级别查找单词所在的地方，并弹出窗口
+map <F9> :call Search_Word()<CR>
+
+"cs search word
+nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+" find the define                                 
+nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+" find call what funcs                            
+nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+" find called func                                
+nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+" find where file the func is                     
+nmap <C-\>i :cs find i <C-R>=expand("<cword>")<CR><CR>
+" nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+
+" 取消JK 缩进一行
+nmap J j
+
+map <C-d> :Buffers<CR>
+map <C-j> :bprevious<CR>
+map <C-k> :bnext<CR>
+map <C-e> :botright copen<CR>
+map c<C-e> :cclose<CR>
+" 映射后需勾选 secureCRT 会话选项里的 backspace 发送delete B
+" Ctrl+h 插入模式向左移动光标
+inoremap <C-h> <left>
+" Ctrl+j 插入模式向下移动光标
+inoremap <C-j> <down>
+" Ctrl+h 插入模式向上移动光标
+inoremap <C-k> <up>
+" Ctrl+l 插入模式向右移动光标
+inoremap <C-l> <right>
 
 
 "set fenc=utf-8
 " set fileencodings=utf-8
 
-set cscopequickfix=e-,i-,s-,t-
 "nnoremap k gk
 "nnoremap gk k
 "nnoremap j gj
@@ -401,25 +465,10 @@ set cscopequickfix=e-,i-,s-,t-
 "inoremap [ []<ESC>i
 "inoremap < <><ESC>i}}
 
+"end 快捷键
+"
 "%% 自动补全目录
 cnoremap <expr> %% getcmdtype( ) == ':' ? expand('%:h').'/' : '%%'
-
-let Tlist_Use_Right_Window=1
-let Tlist_Show_One_File=1
-let Tlist_Exit_OnlyWindow=1
-let Tlist_WinWidt=20
-
-let NERDTreeWinSize=40
-
-"end 快捷键
-
-"let Tlist_Auto_Open=1
-let Tlist_Exit_OnlyWindow=0
-let Tlist_Use_Right_Window=1
-let Tlist_WinWidth=40
-"let Tlist_Inc_Winwidth=1
-
-set tags+=~/.vim/systags;
 
 "常见用法 
 " 1、十六进制打开文件
