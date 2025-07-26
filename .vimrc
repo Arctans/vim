@@ -73,7 +73,9 @@ set shiftwidth=4
 "设置自动缩进
 set autoindent
 set cindent
-
+"设置行尾显示多余空格字符
+set list
+set listchars=tab:\ \ ,trail:·,extends:>,precedes:<
 "设置vim-colorschemes
 set background=dark
 " Source a global configuration file if available
@@ -161,6 +163,7 @@ Plugin 'SirVer/ultisnips'
 Plugin 'frazrepo/vim-rainbow'
 Plugin 'vim-airline/vim-airline'
 Plugin 'ludovicchabant/vim-gutentags'
+" Plugin 'brookhong/cscope.vim'
 
 
 call vundle#end()            " required
@@ -209,7 +212,12 @@ nmap c<C-n> :call ToggleNerdTree()<CR>
 nmap <C-n> :NERDTreeFind<CR>
 nmap <C-g> :grep! -nr
 let NERDTreeWinSize=40
-
+let g:NERDTreeDisableFileExtensionHighlight = 1
+let g:NERDTreeDisableExactMatchHighlight = 1
+let g:NERDTreeDisablePatternMatchHighlight = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 0
+let g:NERDTreeNodeDelimiter = "\u00a0"
+let g:webdevicons_enable_nerdtree = 0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""新文件标题
@@ -267,7 +275,7 @@ let Tlist_Use_Right_Window=1
 let Tlist_WinWidth=40
 "let Tlist_Inc_Winwidth=1
 
-
+highlight SpecialKey ctermfg=Red
 " ================FZF configuration =====================
 let g:fzf_preview_window = []
 
@@ -291,7 +299,7 @@ let g:ycm_use_clangd = 0
 " 检查是否支持 cscope
 if has("cscope")
     " 使用 quickfix 窗口显示结果
-    " set cscopequickfix=s-,c-,d-,i-,t-,e-
+    " set cscopequickfix=s-,c+,d-,i-,t-,e-
 	let g:cscope_silent = 1
 	let g:cscope_use_quickfix = 1
 
@@ -451,7 +459,6 @@ inoremap <C-j> <down>
 inoremap <C-k> <up>
 " Ctrl+l 插入模式向右移动光标
 inoremap <C-l> <right>
-
 
 "set fenc=utf-8
 " set fileencodings=utf-8
