@@ -300,6 +300,7 @@ let g:ycm_use_clangd = 0
 if has("cscope")
     " 使用 quickfix 窗口显示结果
     " set cscopequickfix=s-,c+,d-,i-,t-,e-
+	set cscopequickfix=
 	let g:cscope_silent = 1
 	let g:cscope_use_quickfix = 1
 
