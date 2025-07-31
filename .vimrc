@@ -53,14 +53,14 @@ filetype on                  " required
 
 
 "vim 中文乱码可以设置
-"e ++enc=cp936 
+"e ++enc=cp936
 set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 
 "代码根据 {} 自动折叠
 "set foldmethod=indent
-"or set fdm=indent 
+"or set fdm=indent
 "设置行号
 set number
 "设置相对行号
@@ -202,7 +202,7 @@ endfunction
 " Highlight currently open buffer in NERDTree
 " #关闭自动跳转
 " autocmd BufEnter * call SyncTree()
- 
+
 function! ToggleNerdTree()
   set eventignore=BufEnter
   NERDTreeToggle
@@ -222,28 +222,28 @@ let g:webdevicons_enable_nerdtree = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""新文件标题
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"新建.c,.h,.sh,.java文件，自动插入文件头 
-autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" 
-""定义函数SetTitle，自动插入文件头 
-func SetTitle() 
-	"如果文件类型为.sh文件 
-	if &filetype == 'sh' 
-		call setline(1, "#!/bin/bash") 
-		call append(line("."), "##########################################################################") 
-		call append(line(".")+1, "# File Name: ".expand("%")) 
-		call append(line(".")+2, "# Author: Arctan") 
-		call append(line(".")+3, "# Created Time: ".strftime("%c")) 
-		call append(line(".")+4, "#########################################################################") 
+"新建.c,.h,.sh,.java文件，自动插入文件头
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()"
+""定义函数SetTitle，自动插入文件头
+func SetTitle()
+	"如果文件类型为.sh文件
+	if &filetype == 'sh'
+		call setline(1, "#!/bin/bash")
+		call append(line("."), "##########################################################################")
+		call append(line(".")+1, "# File Name: ".expand("%"))
+		call append(line(".")+2, "# Author: Arctan")
+		call append(line(".")+3, "# Created Time: ".strftime("%c"))
+		call append(line(".")+4, "#########################################################################")
 	"	call append(line(".")+5, "#!/bin/zsh")
 	"	call append(line(".")+6, "PATH=/home/edison/bin:/home/edison/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/work/tools/gcc-3.4.5-glibc-2.3.6/bin")
 	"	call append(line(".")+7, "export PATH")
 		call append(line(".")+8, "")
-	else 
-		call setline(1, "/*************************************************************************") 
-		call append(line("."), "	> File Name: ".expand("%")) 
-		call append(line(".")+1, "	> Author: Arctan") 
-		call append(line(".")+2, "	> Created Time: ".strftime("%c")) 
-		call append(line(".")+3, " ************************************************************************/") 
+	else
+		call setline(1, "/*************************************************************************")
+		call append(line("."), "	> File Name: ".expand("%"))
+		call append(line(".")+1, "	> Author: Arctan")
+		call append(line(".")+2, "	> Created Time: ".strftime("%c"))
+		call append(line(".")+3, " ************************************************************************/")
 		call append(line(".")+4, "")
 	endif
 	if &filetype == 'cpp'
@@ -261,7 +261,7 @@ func SetTitle()
 	"	endif
 	"新建文件后，自动定位到文件末尾
 	autocmd BufNewFile * normal G
-endfunc 
+endfunc
 
 " ================Tlist configuration =====================
 let Tlist_Use_Right_Window=1
@@ -305,7 +305,6 @@ if has("cscope")
 
     " 优先使用 cscope 而不是 ctags
     set csto=0
-    
     " 设置 cscope 命令路径（如果需要）
     " set csprg=/usr/local/bin/cscope
 endif
@@ -343,21 +342,16 @@ endfunction
 function! LoadCscopeDB()
     " 先断开所有现有连接
     silent! cs kill -1
-    
     " 查找 cscope.out 文件（从当前目录向上搜索到根目录）
     let db = findfile("cscope.out", ".;")
     if !empty(db)
         let path = fnamemodify(db, ':p:h')
-        
         " 抑制重复连接错误信息
         set nocscopeverbose
-        
         " 添加数据库
         execute "cs add " . db . " " . path
-        
         " 恢复 verbose 设置
         set cscopeverbose
-        
         " echo "Loaded cscope database: " . db
     else
         " echo "No cscope database found"
@@ -429,13 +423,13 @@ map <F9> :call Search_Word()<CR>
 
 "cs search word
 nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-" find the define                                 
+" find the define
 nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-" find call what funcs                            
+" find call what funcs
 nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
-" find called func                                
+" find called func
 nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-" find where file the func is                     
+" find where file the func is
 nmap <C-\>i :cs find i <C-R>=expand("<cword>")<CR><CR>
 " nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
 nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
@@ -477,11 +471,11 @@ inoremap <C-l> <right>
 "%% 自动补全目录
 cnoremap <expr> %% getcmdtype( ) == ':' ? expand('%:h').'/' : '%%'
 
-"常见用法 
+"常见用法
 " 1、十六进制打开文件
-" :%!xxd  
+" :%!xxd
 " :%!xxd -r
 
 " 2、查看二进制文件
-" hexdump -C uImage |less 
+" hexdump -C uImage |less
 "
